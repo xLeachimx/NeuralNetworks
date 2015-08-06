@@ -20,9 +20,9 @@ class Neuron
       @activation += i
     end
     # sigmoid
-    # @activation = 1/(1+(Math.exp(-activation))) #Run through sigmoid function
+    @activation = 1/(1+(Math.exp(-activation))) #Run through sigmoid function
     # hyperbolic
-    @activation = Math.tanh(activation)
+    # @activation = Math.tanh(activation)
   end
 
   def reset
@@ -138,7 +138,7 @@ class NeuralNetwork
     end
   end
 
-  def toFile
+  def toString
     result = ""
     @network.each_index do |layer|
       @network[layer].each_index do |neuron|
@@ -155,9 +155,9 @@ class NeuralNetwork
 
   def backpropFunction totalInput
     # Sigmoid
-    # return (Math.exp(totalInput)/((1+Math.exp(totalInput))**2))
+    return (Math.exp(totalInput)/((1+Math.exp(totalInput))**2))
     # Hyperbolic
-    return 1-(Math.tanh(totalInput)**2)
+    # return 1-(Math.tanh(totalInput)**2)
   end
 
   def clearNet
@@ -168,79 +168,3 @@ class NeuralNetwork
     end
   end
 end
-
-class TestCase
-  attr_accessor :input
-  attr_accessor :expectation
-  def initialize input, expectation
-    @input = input
-    @expectation = expectation
-  end
-
-  def expectationMatched output
-    return false if output.length != @expectation.length
-    output.each_index do |i|
-      return false if output[i] != @expectation[i]
-    end
-    return true
-  end
-end
-
-def test
-  net = NeuralNetwork.new([3,6,3,1])
-  cases = []
-  cases.push(TestCase.new([0,0,0],[0]))
-  cases.push(TestCase.new([1,0,0],[0]))
-  cases.push(TestCase.new([0,1,0],[0]))
-  cases.push(TestCase.new([1,1,0],[1]))
-  cases.push(TestCase.new([0,0,1],[0]))
-  cases.push(TestCase.new([1,0,1],[1]))
-  cases.push(TestCase.new([0,1,1],[1]))
-  cases.push(TestCase.new([1,1,1],[1]))
-  done = false
-  trials = 0
-  maxTrials = 1000
-  highest = 0.0
-  learningRate = 1
-  puts net.toFile
-  retried = false
-  trainResult = File.open('results.csv','w')
-  while !done do
-    learningRate = Random.rand()
-    trials += 1
-    count = 0.0
-    trains = []
-    cases.each do |c|
-      net.run(c.input)
-      # puts net.retrieveOutput
-      if c.expectationMatched(net.retrieveOutputRounded)
-        count += 1.0
-      else
-        trains.push(c)
-        # net.train(c.expectation,learningRate)
-      end
-      # net.train(c.expectation,learningRate)
-    end
-    accuracy = (count/cases.length)
-    trainResult.write(accuracy.to_s + "\n")
-    if accuracy > highest
-      highest = accuracy
-      # puts highest
-    end
-    puts accuracy
-    break if count == cases.length
-    cases.each do |c|
-      net.train(c.expectation,learningRate)
-    end
-    # if trials == maxTrials
-    #   net = NeuralNetwork.new([3,6,3,1])
-    #   trials = 0
-    #   puts "Retry"
-    # end
-  end
-  trainResult.close()
-  puts trials
-  puts net.toFile
-end
-
-test
