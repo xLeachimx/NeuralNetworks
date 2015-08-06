@@ -22,8 +22,9 @@ public:
 
   void freezeNet(); //prevents further learning from taking place(even if called)
   void unfreezeNet(); //allows for further learning of the network
+  void randomize();
 
-  void train(vector<double> input, vector<double> expected); //performs training based on the expected output
+  void train(vector<double> input, vector<double> expected, double learningRate); //performs training based on the expected output
 protected:
   struct Dendrite;
   struct Neuron;
@@ -32,6 +33,8 @@ protected:
 
   double activationFunction(double input);
   double activationDerivative(double input);
+
+  double randomStrength();
 private:
   Neuron **network;
   int layers;
