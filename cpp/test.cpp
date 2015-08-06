@@ -55,7 +55,6 @@ bool match(vector<double> output, vector<double> expected){
 int main(int argc, char **argv){
   TestCase majority[MAJORITY_CASES];
   setupMajorityTest(majority);
-  cout << time(0) <<endl;
   srand(time(0));
   vector<int> layerSizes = vector<int>();
   layerSizes.push_back(3);
